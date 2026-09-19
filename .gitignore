@@ -1,0 +1,16 @@
+# Secrets (never commit)
+.env
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Local logs & state (may contain personal prompts / snapshots)
+*.log
+rotina.snap.json
+REMOTE_LOG.md
+
+# Scratch tests
+_pb_test.py
+_pb_test.txt
