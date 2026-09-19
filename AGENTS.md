@@ -15,6 +15,9 @@ do dono — como Aiza é a do WhatsApp).
 
 - **Fase 1 em produção**: bot rodando (`/start`, menus inline, allowlist ativo) com respostas reais
   do opencode (`bigpickle-zen/big-pickle`) e **log remoto persistente** (`REMOTE_LOG.md`).
+- **Teste real do dono PASSOU (2026-09-19)**: bot acessado pelo Telegram do dono, menus inline
+  respondendo. **Git (2026-09-19)**: repo standalone público `DSama-lab/TailaBot-RemoteCoding`,
+  branch `main`, tag+release **v1.0.0**. `README.md` é o README formal em inglês (portfólio).
 - Todo comando/arquivo/teste executado via Telegram fica registrado no `REMOTE_LOG.md`.
 
 ### ⚠️ FIX 2026-09-19 — não usar `--attach` (opencode v1.18.x)
@@ -46,8 +49,8 @@ as tarefas (mantido opcional p/ `/status`).
 
 | Arquivo | Papel |
 |---|---|
-| `PLANO-GERAL.md` | Plano completo (visão, arquitetura, stack, menus, fases, segurança, pendências) |
-| `README.md` | Como rodar + instruções de criação do bot no BotFather + como retomar |
+| `README.md` | **README formal em inglês** (portfólio). Como rodar + instruções de criação do bot no BotFather + arquitetura + roadmap |
+| `.gitignore` | Exclui `.env`, `.venv/`, `__pycache__/`, `*.log`, `rotina.snap.json`, `REMOTE_LOG.md`, `_pb_test.*` |
 | `.env.example` | Variáveis de exemplo (nunca valores reais) |
 | `requirements.txt` | Dependências Python |
 | `tailabot_remote.py` | Bot aiogram 3.x (allowlist, comandos, menus) |
