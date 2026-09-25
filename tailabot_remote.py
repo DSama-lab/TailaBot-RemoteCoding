@@ -25,6 +25,12 @@ import remote_log
 
 load_dotenv()
 
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 OWNER_CHAT_ID = int(os.getenv("OWNER_CHAT_ID", "0") or 0)
 BASE_URL = os.getenv("OPENCODE_BASE_URL", "http://127.0.0.1:4590")
@@ -63,17 +69,16 @@ G = {
 }
 
 EMOJI = {
-    "funil": "🎯",
-    "mapa": "🌍",
-    "disparo": "📣",
-    "loja": "🛒",
-    "dia": "🗓️",
-    "teste": "🧪",
-    "zip": "📦",
-    "shot": "🖼️",
-    "consulta": "💡",
-    "executa": "🛠️",
-    "tarefa": "🤖",
+    "funil": "Funil",
+    "mapa": "Mapa",
+    "disparo": "Disparo",
+    "loja": "Loja",
+    "dia": "Dia",
+    "teste": "Teste",
+    "zip": "Zip",
+    "shot": "Shot",
+    "consulta": "[consulta]",
+    "executa": "[executa]",
 }
 
 PROMPTS = {
@@ -86,23 +91,23 @@ PROMPTS = {
 
 TXT = {
     "welcome": (
-        "Taila Bot 🙋‍♀️ - RC\n"
+        "Taila Bot - RC\n"
         "Opencode - My Big Pickle\n\n"
-        "Oi! Sou o RemoteCoding da AAA Digital: você manda a função e eu executo no PC\n"
-        "(via opencode). Use os botões do menu abaixo ou digite qualquer tarefa.\n\n"
-        "Marcadores (no início da mensagem):\n"
-        "• \u200b? ou plan:\u200b\b só consulta (não altero nada)\n"
-        "• \u200b! ou build:\u200b\b executo a tarefa"
+        "Oi! Sou o RemoteCoding da AAA Digital: voce manda a funcao e eu executo no PC\n"
+        "(via opencode). Use os botoes do menu abaixo ou digite qualquer tarefa.\n\n"
+        "Marcadores (no inicio da mensagem):\n"
+        "- ? ou plan: so consulta (nao altero nada)\n"
+        "- ! ou build: executo a tarefa"
     ),
-    "ask": "✍️ Digite sua pergunta/tarefa direto no chat (ex.: \"zípa o funil\", \"roda os testes do mapa\").",
-    "busy": "⏳ aguarde… Taila trabalhando…",
-    "done": "✅ Pronto! Mais alguma coisa? 🙂",
-    "err": "❌ Erro:",
-    "timeout": "⏰ Demorou demais. Tente de novo.",
+    "ask": "Digite sua pergunta/tarefa direto no chat (ex.: \"zipa o funil\", \"roda os testes do mapa\").",
+    "busy": "Aguarde, Taila trabalhando...",
+    "done": "Pronto! Mais alguma coisa?",
+    "err": "Erro:",
+    "timeout": "Demorou demais. Tente de novo.",
     "no_last": "Nada para repetir ainda.",
-    "doc": "📎 Arquivo recebido. Agora mande a instrução para processá-lo.",
-    "offline": "❌ opencode offline — rode: opencode serve --port {port}",
-    "projects": "📁 Projetos da AAA Digital — escolha para ver ações.",
+    "doc": "Arquivo recebido. Agora mande a instrucao para processa-lo.",
+    "offline": "opencode offline - rode: opencode serve --port {port}",
+    "projects": "Projetos da AAA Digital - escolha para ver acoes.",
 }
 
 
@@ -111,36 +116,36 @@ def kb(*rows):
 
 
 MAIN_KB = kb(
-    [("📁 Projetos", "m:proj"), ("✍️ Perguntar", "m:ask")],
-    [("⚙️ Ações", "m:act"), ("🔁 Repetir última", "m:rep")],
-    [("🛟 Ajuda", "m:help"), ("🔄 Status", "m:st")],
+    [("Projetos", "m:proj"), ("Perguntar", "m:ask")],
+    [("Acoes", "m:act"), ("Repetir ultima", "m:rep")],
+    [("Ajuda", "m:help"), ("Status", "m:st")],
 )
 
 PROJ_KB = kb(
-    [("🎯 Funil TikTok", "p:funil"), ("🌍 Life Maps", "p:mapa")],
-    [("📣 Disparo em Massa", "p:disparo"), ("🛒 Loja BlackOps7", "p:loja")],
-    [("🏠 Menu", "m:home")],
+    [("Funil TikTok", "p:funil"), ("Life Maps", "p:mapa")],
+    [("Disparo em Massa", "p:disparo"), ("Loja BlackOps7", "p:loja")],
+    [("Menu", "m:home")],
 )
 
 ACT_KB = kb(
-    [("❓ O que fizemos até hoje?", "a:dia")],
-    [("🌈 ZIP do funil", "a:zip_funil"), ("🖼 Screenshot", "a:shot")],
-    [("🔁 Repetir última", "m:rep"), ("🔄 Status", "m:st")],
-    [("◀ Voltar", "m:home")],
+    [("O que fizemos ate hoje?", "a:dia")],
+    [("ZIP do funil", "a:zip_funil"), ("Screenshot", "a:shot")],
+    [("Repetir ultima", "m:rep"), ("Status", "m:st")],
+    [("Voltar", "m:home")],
 )
 
 
 def proj_kb(key):
     rows = []
     if key == "funil":
-        rows = [[("🌈 ZIP do funil", "a:zip_funil")], [("📋 Resumo", "f:funil_res")]]
+        rows = [[("ZIP do funil", "a:zip_funil")], [("Resumo", "f:funil_res")]]
     elif key == "mapa":
-        rows = [[("▶️ Rodar test-motor (13/13)", "f:mapa_test")], [("📋 Resumo", "f:mapa_res")]]
+        rows = [[("Rodar test-motor (13/13)", "f:mapa_test")], [("Resumo", "f:mapa_res")]]
     elif key == "disparo":
-        rows = [[("▶️ Rodar pytest", "f:disparo_test")], [("📋 Resumo", "f:disparo_res")]]
+        rows = [[("Rodar pytest", "f:disparo_test")], [("Resumo", "f:disparo_res")]]
     elif key == "loja":
-        rows = [[("📋 Resumo", "f:loja_res")]]
-    rows.append([("◀ Projetos", "m:proj"), ("🏠 Menu", "m:home")])
+        rows = [[("Resumo", "f:loja_res")]]
+    rows.append([("Voltar", "m:proj"), ("Menu", "m:home")])
     return kb(*rows)
 
 
@@ -162,7 +167,7 @@ async def answer_state(cb, text):
     await cb.answer()
 
 
-async def run_ai_and_report(anchor, prompt, kbk=None, mark="🤖"):
+async def run_ai_and_report(anchor, prompt, kbk=None, mark="[proc]"):
     print(f"[taila] acao: {prompt[:120]} | mark={mark}", flush=True)
     busy = await anchor.answer(TXT["busy"])
     last_prog = {}
@@ -177,7 +182,7 @@ async def run_ai_and_report(anchor, prompt, kbk=None, mark="🤖"):
 
         async def _send():
             try:
-                await anchor.answer(f"⏳ Taila: {marker}", parse_mode=None)
+                await anchor.answer(f"Taila: {marker}", parse_mode=None)
             except Exception:
                 pass
 
@@ -231,7 +236,7 @@ async def cmd_status(message: Message):
     if not is_owner(message.chat.id):
         return
     up = bridge.server_is_up(BASE_URL)
-    txt = f"🔄 opencode ({BASE_URL}): " + ("✅ online" if up else "❌ offline — rode: opencode serve --port %d" % PORT)
+    txt = f"opencode ({BASE_URL}): " + ("on-line" if up else "off-line - rode: opencode serve --port %d" % PORT)
     await message.answer(txt, reply_markup=MAIN_KB)
 
 
@@ -244,9 +249,9 @@ async def cmd_help(message: Message):
         "/start · /menu — abrir menu\n"
         "/status — servidor opencode\n"
         "/help — esta ajuda\n\n"
-        "Marcadores: ? ou plan: = só consulta · ! ou build: = executar\n"
-        "Ex.: \u201c? como está a loja\u201d · \u201c! roda os testes do mapa\u201d\n"
-        "Ou use o menu ⚙️ Ações / 📁 Projetos. Digite \"o que fizemos até hoje?\" p/ resumo do dia.",
+        "Marcadores: ? ou plan: = so consulta · ! ou build: = executar\n"
+        "Ex.: \"? como esta a loja\" · \"! roda os testes do mapa\"\n"
+        "Ou use o menu Acoes / Projetos. Digite \"o que fizemos ate hoje?\" p/ resumo do dia.",
         reply_markup=MAIN_KB,
     )
 
@@ -303,7 +308,7 @@ async def handle_text(message: Message):
 
         async def _send():
             try:
-                await message.answer(f"⏳ Taila: {marker}", parse_mode=None)
+                await message.answer(f"Taila: {marker}", parse_mode=None)
             except Exception:
                 pass
 
@@ -343,22 +348,22 @@ async def cb_menu(cb: CallbackQuery):
     elif act == "proj":
         await cb.message.edit_text(TXT["projects"], reply_markup=PROJ_KB, parse_mode=parse_mode())
     elif act == "act":
-        await cb.message.edit_text("⚙️ Ações rápidas:", reply_markup=ACT_KB, parse_mode=parse_mode())
+        await cb.message.edit_text("Acoes rapidas:", reply_markup=ACT_KB, parse_mode=parse_mode())
     elif act == "help":
-        await cb.message.edit_text("🛟 Use os botões: 📁 Projetos (ações por projeto) · ⚙️ Ações (resumo do dia, ZIP, screenshot) · ou digite qualquer tarefa.", reply_markup=MAIN_KB, parse_mode=parse_mode())
+        await cb.message.edit_text("Use os botoes: Projetos (acoes por projeto) · Acoes (resumo do dia, ZIP, screenshot) · ou digite qualquer tarefa.", reply_markup=MAIN_KB, parse_mode=parse_mode())
     elif act == "ask":
-        await cb.answer("Digite a tarefa no chat 🙂")
+        await cb.answer("Digite a tarefa no chat.")
         await cb.message.answer(TXT["ask"])
     elif act == "rep":
         last = last_task.get(cb.message.chat.id)
         if not last:
             await cb.answer(TXT["no_last"], show_alert=True)
             return
-        await cb.message.answer(f"🔁 Repetindo: {last['prompt']}")
+        await cb.message.answer(f"Repetindo: {last['prompt']}")
         await run_ai_and_report(cb.message, last["prompt"])
     elif act == "st":
         up = bridge.server_is_up(BASE_URL)
-        await cb.answer(("🔄 opencode ✅ online" if up else "🔄 opencode ❌ offline"), show_alert=True)
+        await cb.answer(("opencode: on-line" if up else "opencode: off-line"), show_alert=True)
     await cb.answer()
 
 
@@ -366,7 +371,7 @@ async def cb_menu(cb: CallbackQuery):
 async def cb_proj(cb: CallbackQuery):
     key = cb.data[2:]
     path, name = G.get(key, (None, key))
-    await answer_state(cb, f"📁 **{name}**\n`{path}`\n\nEscolha uma ação:")
+    await answer_state(cb, f"**{name}**\n`{path}`\n\nEscolha uma acao:")
     await cb.message.edit_reply_markup(reply_markup=proj_kb(key))
 
 
@@ -374,41 +379,39 @@ async def cb_proj(cb: CallbackQuery):
 async def cb_fact(cb: CallbackQuery):
     key = cb.data[2:]
     if key == "mapa_test":
-        await answer_state(cb, "▶️ rodando test-motor…")
+        await answer_state(cb, "Rodando test-motor...")
         r = bridge.run_local(["node", "test-motor.js"], str(G["mapa"][0]), timeout=120)
         remote_log.append("local", "node test-motor.js (Life Maps)", r["ok"], text=r["text"])
-        await cb.message.answer(f"🧪 test-motor.js\n\n{r['text'][-2500:]}", reply_markup=proj_kb("mapa"))
+        await cb.message.answer(f"test-motor.js\n\n{r['text'][-2500:]}", reply_markup=proj_kb("mapa"))
     elif key == "disparo_test":
-        await answer_state(cb, "▶️ rodando pytest…")
+        await answer_state(cb, "Rodando pytest...")
         r = bridge.run_local(["python", "-m", "pytest", "-q"], str(G["disparo"][0]), timeout=180)
         remote_log.append("local", "pytest (Disparo em Massa)", r["ok"], text=r["text"])
-        await cb.message.answer(f"🧪 pytest\n\n{r['text'][-2500:]}", reply_markup=proj_kb("disparo"))
+        await cb.message.answer(f"pytest\n\n{r['text'][-2500:]}", reply_markup=proj_kb("disparo"))
     else:
         prompt = PROMPTS.get(key, "Resuma esse projeto da AAA Digital.")
-        await answer_state(cb, "📋 resumindo…")
-        await cb.message.answer("⏳")
+        await answer_state(cb, "Resumindo...")
         proj = key.split("_")[0]
-        await run_ai_and_report(cb.message, prompt, proj_kb(proj), mark=EMOJI.get(proj, "🤖"))
+        await run_ai_and_report(cb.message, prompt, proj_kb(proj), mark=EMOJI.get(proj, "[proc]"))
 
 
 @router.callback_query(F.data.startswith("a:"))
 async def cb_act(cb: CallbackQuery):
     key = cb.data[2:]
     if key == "dia":
-        await answer_state(cb, "❓ lendo MDs…")
-        await cb.message.answer("⏳")
+        await answer_state(cb, "Lendo MDs...")
         await run_ai_and_report(cb.message, PROMPTS["dia"], MAIN_KB, mark=EMOJI["dia"])
     elif key == "shot":
-        await answer_state(cb, "🖼 Mande a URL que quer que eu screenshot (Playwright MCP).")
+        await answer_state(cb, "Mande a URL que quer que eu screenshot (Playwright MCP).")
     elif key == "zip_funil":
-        await answer_state(cb, "🌈 gerando ZIP do funil…")
+        await answer_state(cb, "Gerando ZIP do funil...")
         src = G["funil"][0]
         dst = src.with_suffix(".zip")
         try:
             out = bridge.zip_folder(str(src), str(dst))
             remote_log.append("local", "ZIP do funil", True, text=f"gerado: {out}")
             await cb.message.answer_document(BufferedInputFile(Path(out).read_bytes(), filename="funil-ofertatiktok.zip"))
-            await cb.message.answer(f"📦 {TXT['done']}", reply_markup=MAIN_KB)
+            await cb.message.answer(TXT["done"], reply_markup=MAIN_KB)
         except Exception as e:
             remote_log.append("local", "ZIP do funil", False, error=str(e))
             await cb.message.answer(f"{TXT['err']} {e}", reply_markup=MAIN_KB)

@@ -205,9 +205,9 @@ def _emit_progress(log_path, last_progress, on_progress):
             state = part.get("state")
             status = state.get("status") if isinstance(state, dict) else None
             if status in ("running", "completed", None):
-                marker = f"▶️ {tool}"
+                marker = f"[ferramenta] {tool}"
         elif etype == "error":
-            marker = "⚠️ erro na tarefa"
+            marker = "erro na tarefa"
     if marker and marker != last_progress:
         on_progress(marker[-400:])
         return marker
